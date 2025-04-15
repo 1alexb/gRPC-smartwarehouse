@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package stock;
+
+// Request to update stock
+message StockUpdateRequest {
+  int32 item_id = 1;
+  int32 new_quantity = 2;
+}
+
+// Response for stock update
+message StockUpdateResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Request to query stock
+message StockQuery {
+  int32 item_id = 1;
+}
+
+// Response with stock details
+message StockStatus {
+  int32 item_id = 1;
+  string name = 2;
+  int32 quantity = 3;
+  string location = 4;
+}
+
+// Request for bulk updates
+message BulkStockUpdate {
+  int32 item_id = 1;
+  int32 new_quantity = 2;
+}
+
+// StockTracking service definition
+service StockTrackingService {
+  rpc UpdateStock(StockUpdateRequest) returns (StockUpdateResponse);
+  rpc GetStockStatus(StockQuery) returns (StockStatus);
+  rpc BulkUpdateStock(stream BulkStockUpdate) returns (StockUpdateResponse);
+}
