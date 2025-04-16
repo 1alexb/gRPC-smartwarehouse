@@ -1,5 +1,7 @@
+// Specify the version of Protocol Buffers used
 syntax = "proto3";
 
+// Define the package name for this proto file
 package stock;
 
 // Request to update stock
