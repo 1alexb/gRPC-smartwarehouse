@@ -1,0 +1,26 @@
+// Specify the version of Protocol Buffers used
+syntax = "proto3";
+
+// Define the package name for this proto file
+package robot;
+
+// Request message for the GetRobotStatus RPC
+// The client sends the ID of the robot it wants to monitor
+message RobotStatusRequest {
+  int32 robot_id = 1;
+}
+
+// Response message that contains live status updates from the robot
+// Each message includes the robot's ID, current state, and location
+message RobotStatus {
+  int32 robot_id = 1;         // Unique ID of the robot
+  string state = 2;           // Current state (e.g., "IDLE", "MOVING", etc.)
+  string current_location = 3; // Text describing where the robot is
+}
+
+// Define the InventoryRobotService with a server-side streaming RPC
+// The server sends a continuous stream of RobotStatus messages
+// in response to a single RobotStatusRequest from the client
+service InventoryRobotService {
+  rpc GetRobotStatus(RobotStatusRequest) returns (stream RobotStatus);
+}
