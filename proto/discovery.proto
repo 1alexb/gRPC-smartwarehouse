@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package discovery;
+
+// Request to discover a service by name
+message ServiceRequest {
+  string serviceName = 1;
+}
+
+// Response containing the service's address
+message ServiceResponse {
+  string address = 1;
+}
+
+// Discovery Service with a single unary RPC
+service DiscoveryService {
+  rpc DiscoverService(ServiceRequest) returns (ServiceResponse);
+}
