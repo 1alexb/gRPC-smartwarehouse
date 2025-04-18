@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package teststock;
+
+message StockQuery {
+  int32 item_id = 1;
+}
+
+message StockStatus {
+  int32 item_id = 1;
+  string name = 2;
+  int32 quantity = 3;
+  string location = 4;
+}
+
+service TestStockService {
+  rpc GetStockStatus(StockQuery) returns (StockStatus);
+}

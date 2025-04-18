@@ -4,7 +4,14 @@ const path = require('path');
 
 // Load the order.proto file
 const PROTO_PATH = path.join(__dirname, '../proto/order.proto');
-const packageDefinition = protoLoader.loadSync(PROTO_PATH);
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+
 const orderProto = grpc.loadPackageDefinition(packageDefinition).order;
 
 // In-memory mock order list

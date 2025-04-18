@@ -3,12 +3,20 @@ const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 
 const PROTO_PATH = path.join(__dirname, '../proto/stock.proto');
-const packageDefinition = protoLoader.loadSync(PROTO_PATH);
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+
 const stockProto = grpc.loadPackageDefinition(packageDefinition).stock;
 
 let stock = [
   { item_id: 1, name: "Box of screws", quantity: 100, location: "A1" },
-  { item_id: 2, name: "Wooden planks", quantity: 50, location: "B3" }
+  { item_id: 2, name: "Wooden planks", quantity: 50, location: "B3" },
+  { item_id: 3, name: "Metal frames", quantity: 20, location: "C1" }
 ];
 
 // Unary: Update stock quantity
@@ -24,10 +32,18 @@ const updateStock = (call, callback) => {
 
 // Unary: Get stock status
 const getStockStatus = (call, callback) => {
-  const item = stock.find(i => i.item_id === call.request.item_id);
+  console.log('Incoming GetStockStatus request:', call.request);
+
+  const item = stock.find(i => {
+    console.log('Checking against:', i.item_id);
+    return i.item_id === call.request.item_id;
+  });
+
   if (item) {
+    console.log('Match found:', item);
     callback(null, item);
   } else {
+    console.log('No match found');
     callback({
       code: grpc.status.NOT_FOUND,
       details: "Item not found"

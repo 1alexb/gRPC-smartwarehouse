@@ -5,7 +5,14 @@ const path = require('path');
 
 // Load the .proto file for the robot service
 const PROTO_PATH = path.join(__dirname, '../proto/robot.proto');
-const packageDefinition = protoLoader.loadSync(PROTO_PATH);
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+
 const robotProto = grpc.loadPackageDefinition(packageDefinition).robot;
 
 // Define a set of possible robot states for simulation

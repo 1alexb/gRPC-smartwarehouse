@@ -4,7 +4,14 @@ const path = require('path');
 
 // Load the discovery.proto file
 const PROTO_PATH = path.join(__dirname, '../proto/discovery.proto');
-const packageDefinition = protoLoader.loadSync(PROTO_PATH);
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+
 const discoveryProto = grpc.loadPackageDefinition(packageDefinition).discovery;
 
 // Hardcoded mapping of service names to their running addresses
