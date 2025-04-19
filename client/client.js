@@ -208,7 +208,7 @@ showMenu();
 // === DIRECT TEST FOR GetStockStatus (NO DISCOVERY) ===
 // Run this block ONCE to verify service is reachable directly
 
-const stockClient = new stockProto.StockTrackingService('localhost:50051', grpc.credentials.createInsecure());
+/* const stockClient = new stockProto.StockTrackingService('localhost:50051', grpc.credentials.createInsecure());
 
 stockClient.GetStockStatus({ item_id: 1 }, (err, res) => {
   if (err) {
@@ -216,4 +216,4 @@ stockClient.GetStockStatus({ item_id: 1 }, (err, res) => {
   } else {
     console.log("Direct call result:", res);
   }
-});
+}); */

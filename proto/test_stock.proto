@@ -1,3 +1,6 @@
+// Used only for isolated debugging during development
+// Can be removed in final submission
+
 syntax = "proto3";
 
 package teststock;
