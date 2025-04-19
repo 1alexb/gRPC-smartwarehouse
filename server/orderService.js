@@ -11,8 +11,21 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   defaults: true,
   oneofs: true
 });
-
 const orderProto = grpc.loadPackageDefinition(packageDefinition).order;
+
+// Load the stock.proto file for internal calls
+const stockProtoPath = path.join(__dirname, '../proto/stock.proto');
+const stockDefinition = protoLoader.loadSync(stockProtoPath, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+const stockProto = grpc.loadPackageDefinition(stockDefinition).stock;
+
+// Create direct client to StockTrackingService
+const stockClient = new stockProto.StockTrackingService('localhost:50051', grpc.credentials.createInsecure());
 
 // In-memory mock order list
 let orders = [
@@ -28,6 +41,27 @@ const placeOrder = (call, callback) => {
     status: "Received",
     items: call.request.items
   };
+
+  // Reduce stock for each item ordered
+  newOrder.items.forEach(item => {
+    // First, get current stock to calculate new quantity
+    stockClient.GetStockStatus({ item_id: item.item_id }, (err, res) => {
+      if (!err && res.quantity >= item.quantity) {
+        const updatedQty = res.quantity - item.quantity;
+
+        stockClient.UpdateStock({ item_id: item.item_id, new_quantity: updatedQty }, (err2, res2) => {
+          if (err2) {
+            console.log(`Error updating stock for item ${item.item_id}:`, err2.details);
+          } else {
+            console.log(`Stock updated for item ${item.item_id}: new quantity = ${updatedQty}`);
+          }
+        });
+      } else {
+        console.log(`Insufficient or missing stock for item ${item.item_id}`);
+      }
+    });
+  });
+
   orders.push(newOrder);
   callback(null, { order_id: newOrderId, status: "Received" });
 };
