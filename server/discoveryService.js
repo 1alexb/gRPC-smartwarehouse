@@ -18,7 +18,8 @@ const discoveryProto = grpc.loadPackageDefinition(packageDefinition).discovery;
 const services = {
   StockTrackingService: "localhost:50051",
   InventoryRobotService: "localhost:50052",
-  OrderFulfillmentService: "localhost:50053"
+  OrderFulfillmentService: "localhost:50053",
+  ChatService: "localhost:50056"
 };
 
 // Unary RPC: return the address for the given service name

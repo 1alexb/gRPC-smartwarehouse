@@ -23,6 +23,7 @@ const discoveryProto = loadProto('discovery.proto', 'discovery');
 const stockProto = loadProto('stock.proto', 'stock');
 const robotProto = loadProto('robot.proto', 'robot');
 const orderProto = loadProto('order.proto', 'order');
+const chatProto = loadProto('chat.proto', 'chat');
 
 // Create the DiscoveryService client (fixed port)
 const discoveryClient = new discoveryProto.DiscoveryService('localhost:50054', grpc.credentials.createInsecure());
@@ -254,7 +255,7 @@ const getOrderStatus = async () => {
 
 const startChat = async () => {
   try {
-    const client = await getClient('OrderFulfillmentService', orderProto, 'OrderFulfillmentService');
+    const client = await getClient('ChatService', chatProto, 'ChatService');
     const call = client.Chat();
 
     rl.on('line', input => {

@@ -38,7 +38,6 @@ const placeOrder = async (call, callback) => {
   const requestedItems = call.request.items;
 
   try {
-    // Validate and update stock for all items
     await Promise.all(requestedItems.map(async (item) => {
       const stockStatus = await new Promise((resolve, reject) => {
         stockClient.GetStockStatus({ item_id: item.item_id }, (err, res) => {
@@ -58,7 +57,6 @@ const placeOrder = async (call, callback) => {
       });
     }));
 
-    // If all stock validated and updated, save the order
     const newOrderId = orders.length + 1;
     const newOrder = {
       order_id: newOrderId,
@@ -70,7 +68,6 @@ const placeOrder = async (call, callback) => {
     callback(null, { order_id: newOrderId, status: "Received" });
 
   } catch (error) {
-    // Handle stock error or update failure
     console.error("Order rejected:", error);
     callback({
       code: grpc.status.FAILED_PRECONDITION,
@@ -96,23 +93,10 @@ const getOrderStatus = (call, callback) => {
   }
 };
 
-// Bidirectional Streaming: Chat service between warehouse users
-const chat = (call) => {
-  call.on('data', (message) => {
-    console.log(`[${message.user}]: ${message.message}`);
-    call.write({ user: "Server", message: `Received: "${message.message}"` });
-  });
-
-  call.on('end', () => {
-    call.end();
-  });
-};
-
 const server = new grpc.Server();
 server.addService(orderProto.OrderFulfillmentService.service, {
   PlaceOrder: placeOrder,
-  GetOrderStatus: getOrderStatus,
-  Chat: chat
+  GetOrderStatus: getOrderStatus
 });
 
 server.bindAsync('127.0.0.1:50053', grpc.ServerCredentials.createInsecure(), () => {
