@@ -33,37 +33,50 @@ let orders = [
   { order_id: 2, status: "Pending", items: [{ item_id: 2, quantity: 1 }] }
 ];
 
-// Unary: Place a new order
-const placeOrder = (call, callback) => {
-  const newOrderId = orders.length + 1;
-  const newOrder = {
-    order_id: newOrderId,
-    status: "Received",
-    items: call.request.items
-  };
+// Unary: Place a new order with stock validation
+const placeOrder = async (call, callback) => {
+  const requestedItems = call.request.items;
 
-  // Reduce stock for each item ordered
-  newOrder.items.forEach(item => {
-    // First, get current stock to calculate new quantity
-    stockClient.GetStockStatus({ item_id: item.item_id }, (err, res) => {
-      if (!err && res.quantity >= item.quantity) {
-        const updatedQty = res.quantity - item.quantity;
-
-        stockClient.UpdateStock({ item_id: item.item_id, new_quantity: updatedQty }, (err2, res2) => {
-          if (err2) {
-            console.log(`Error updating stock for item ${item.item_id}:`, err2.details);
-          } else {
-            console.log(`Stock updated for item ${item.item_id}: new quantity = ${updatedQty}`);
-          }
+  try {
+    // Validate and update stock for all items
+    await Promise.all(requestedItems.map(async (item) => {
+      const stockStatus = await new Promise((resolve, reject) => {
+        stockClient.GetStockStatus({ item_id: item.item_id }, (err, res) => {
+          if (err) return reject(`Failed to fetch stock for item ${item.item_id}`);
+          if (res.quantity < item.quantity) return reject(`Not enough stock for item ${item.item_id}`);
+          resolve(res);
         });
-      } else {
-        console.log(`Insufficient or missing stock for item ${item.item_id}`);
-      }
-    });
-  });
+      });
 
-  orders.push(newOrder);
-  callback(null, { order_id: newOrderId, status: "Received" });
+      const newQty = stockStatus.quantity - item.quantity;
+
+      await new Promise((resolve, reject) => {
+        stockClient.UpdateStock({ item_id: item.item_id, new_quantity: newQty }, (err) => {
+          if (err) return reject(`Failed to update stock for item ${item.item_id}`);
+          resolve();
+        });
+      });
+    }));
+
+    // If all stock validated and updated, save the order
+    const newOrderId = orders.length + 1;
+    const newOrder = {
+      order_id: newOrderId,
+      status: "Received",
+      items: requestedItems
+    };
+
+    orders.push(newOrder);
+    callback(null, { order_id: newOrderId, status: "Received" });
+
+  } catch (error) {
+    // Handle stock error or update failure
+    console.error("Order rejected:", error);
+    callback({
+      code: grpc.status.FAILED_PRECONDITION,
+      details: error
+    });
+  }
 };
 
 // Unary: Get order status
