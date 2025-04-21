@@ -1,0 +1,76 @@
+[CLIENT] 2025-04-21T15:52:42.740Z - === SMART WAREHOUSE CLIENT STARTED ===
+[CLIENT] 2025-04-21T15:52:46.065Z - User selected menu option: 7
+[CLIENT] 2025-04-21T15:52:46.206Z - Service resolution failed for ChatService
+[CLIENT] 2025-04-21T15:52:46.209Z - Failed to resolve ChatService: 16 UNAUTHENTICATED: Missing or invalid API key
+[CLIENT] 2025-04-21T15:53:32.421Z - User selected menu option: 7
+[CLIENT] 2025-04-21T15:53:32.439Z - Service resolution failed for ChatService
+[CLIENT] 2025-04-21T15:53:32.442Z - Failed to resolve ChatService: 16 UNAUTHENTICATED: Missing or invalid API key
+[CLIENT] 2025-04-21T15:53:36.816Z - === SMART WAREHOUSE CLIENT STARTED ===
+[CLIENT] 2025-04-21T15:53:39.369Z - User selected menu option: 7
+[CLIENT] 2025-04-21T15:53:39.515Z - Service resolution failed for ChatService
+[CLIENT] 2025-04-21T15:53:39.516Z - Failed to resolve ChatService: 16 UNAUTHENTICATED: Missing or invalid API key
+[CLIENT] 2025-04-21T15:57:56.496Z - === SMART WAREHOUSE CLIENT STARTED ===
+[CLIENT] 2025-04-21T15:57:57.807Z - User selected menu option: 7
+[CLIENT] 2025-04-21T15:57:57.910Z - Resolved ChatService to localhost:50056
+[CLIENT] 2025-04-21T15:57:57.921Z - Started chat session
+[CLIENT] 2025-04-21T15:57:57.939Z - Received chat message: Server: Initiated session as User 1
+[CLIENT] 2025-04-21T15:57:57.940Z - Received chat message: Server: Type 'exit chat' to return to the main menu.
+[CLIENT] 2025-04-21T15:58:00.369Z - Sent chat message: test
+[CLIENT] 2025-04-21T15:58:00.380Z - Received chat message: Server: Received: "test"
+[CLIENT] 2025-04-21T16:16:32.352Z - === SMART WAREHOUSE CLIENT STARTED ===
+[CLIENT] 2025-04-21T16:16:33.508Z - User selected menu option: 1
+[CLIENT] 2025-04-21T16:16:33.570Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-21T16:16:34.573Z - Calling GetStockStatus with item ID 1
+[CLIENT] 2025-04-21T16:16:34.591Z - Received stock info: {"item_id":1,"name":"Box of screws","quantity":100,"location":"A1"}
+[CLIENT] 2025-04-21T16:16:37.405Z - User selected menu option: 2
+[CLIENT] 2025-04-21T16:16:37.410Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-21T16:16:40.638Z - Calling UpdateStock for item 1 with qty 0
+[CLIENT] 2025-04-21T16:16:40.646Z - UpdateStock response: Stock updated.
+[CLIENT] 2025-04-21T16:16:42.941Z - User selected menu option: 1
+[CLIENT] 2025-04-21T16:16:42.945Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-21T16:16:43.519Z - Calling GetStockStatus with item ID 1
+[CLIENT] 2025-04-21T16:16:43.524Z - Received stock info: {"item_id":1,"name":"Box of screws","quantity":0,"location":"A1"}
+[CLIENT] 2025-04-21T16:16:49.736Z - User selected menu option: 4
+[CLIENT] 2025-04-21T16:16:49.739Z - Resolved InventoryRobotService to localhost:50052
+[CLIENT] 2025-04-21T16:16:51.276Z - Started robot tracking for ID 1
+[CLIENT] 2025-04-21T16:16:52.383Z - Robot stream: {"robot_id":1,"state":"IDLE","current_location":"Zone 1"}
+[CLIENT] 2025-04-21T16:16:53.380Z - Robot stream: {"robot_id":1,"state":"MOVING","current_location":"Zone 2"}
+[CLIENT] 2025-04-21T16:16:54.392Z - Robot stream: {"robot_id":1,"state":"LOADING","current_location":"Zone 3"}
+[CLIENT] 2025-04-21T16:16:55.402Z - Robot stream: {"robot_id":1,"state":"UNLOADING","current_location":"Zone 4"}
+[CLIENT] 2025-04-21T16:16:56.412Z - Robot stream: {"robot_id":1,"state":"COMPLETED","current_location":"Zone 5"}
+[CLIENT] 2025-04-21T16:16:57.445Z - Robot stream ended
+[CLIENT] 2025-04-21T16:17:02.322Z - User selected menu option: 5
+[CLIENT] 2025-04-21T16:17:02.349Z - Resolved OrderFulfillmentService to localhost:50053
+[CLIENT] 2025-04-21T16:17:04.760Z - Placing order: {"items":[{"item_id":1,"quantity":5}]}
+[CLIENT] 2025-04-21T16:17:04.904Z - gRPC error: Failed to fetch stock for item 1
+[CLIENT] 2025-04-21T16:17:23.691Z - User selected menu option: 1
+[CLIENT] 2025-04-21T16:17:23.703Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-21T16:17:24.492Z - Calling GetStockStatus with item ID 1
+[CLIENT] 2025-04-21T16:17:24.508Z - Received stock info: {"item_id":1,"name":"Box of screws","quantity":0,"location":"A1"}
+[CLIENT] 2025-04-21T16:17:26.740Z - User selected menu option: 1
+[CLIENT] 2025-04-21T16:17:26.755Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-21T16:17:27.709Z - Calling GetStockStatus with item ID 2
+[CLIENT] 2025-04-21T16:17:27.726Z - Received stock info: {"item_id":2,"name":"Wooden planks","quantity":50,"location":"B3"}
+[CLIENT] 2025-04-21T16:17:31.172Z - User selected menu option: 100
+[CLIENT] 2025-04-21T16:17:31.173Z - Invalid menu selection
+[CLIENT] 2025-04-21T16:17:42.562Z - User selected menu option: 2
+[CLIENT] 2025-04-21T16:17:42.573Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-21T16:17:45.298Z - Calling UpdateStock for item 1 with qty 100
+[CLIENT] 2025-04-21T16:17:45.311Z - UpdateStock response: Stock updated.
+[CLIENT] 2025-04-21T16:17:49.143Z - User selected menu option: 5
+[CLIENT] 2025-04-21T16:17:49.154Z - Resolved OrderFulfillmentService to localhost:50053
+[CLIENT] 2025-04-21T16:17:51.859Z - Placing order: {"items":[{"item_id":1,"quantity":50}]}
+[CLIENT] 2025-04-21T16:17:51.886Z - gRPC error: Failed to fetch stock for item 1
+[CLIENT] 2025-04-21T16:19:06.202Z - User selected menu option: 5
+[CLIENT] 2025-04-21T16:19:06.219Z - Resolved OrderFulfillmentService to localhost:50053
+[CLIENT] 2025-04-21T16:19:08.596Z - Placing order: {"items":[{"item_id":1,"quantity":1}]}
+[CLIENT] 2025-04-21T16:19:08.759Z - gRPC error: Failed to fetch stock for item 1
+[CLIENT] 2025-04-21T16:22:41.821Z - === SMART WAREHOUSE CLIENT STARTED ===
+[CLIENT] 2025-04-21T16:22:44.428Z - User selected menu option: 5
+[CLIENT] 2025-04-21T16:22:44.568Z - Resolved OrderFulfillmentService to localhost:50053
+[CLIENT] 2025-04-21T16:22:47.620Z - Placing order: {"items":[{"item_id":1,"quantity":50}]}
+[CLIENT] 2025-04-21T16:22:47.678Z - gRPC error: Failed to fetch stock for item 1
+[CLIENT] 2025-04-21T16:23:06.430Z - User selected menu option: 5
+[CLIENT] 2025-04-21T16:23:06.436Z - Resolved OrderFulfillmentService to localhost:50053
+[CLIENT] 2025-04-21T16:23:08.855Z - Placing order: {"items":[{"item_id":1,"quantity":50}]}
+[CLIENT] 2025-04-21T16:23:08.997Z - Order placed successfully: {"order_id":3,"status":"Received"}

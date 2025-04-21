@@ -15,11 +15,30 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 
 const robotProto = grpc.loadPackageDefinition(packageDefinition).robot;
 
+// === New: Shared API key constant ===
+const API_KEY = "WAREHOUSE_SECRET";
+
+// === New: Authentication utility ===
+const isValidApiKey = (metadata) => {
+  const key = metadata.get('api-key')[0];
+  return key === API_KEY;
+};
+
 // Define a set of possible robot states for simulation
 const robotStates = ["IDLE", "MOVING", "LOADING", "UNLOADING", "COMPLETED"];
 
 // Server-streaming RPC implementation: streams robot status updates to the client
 const getRobotStatus = (call) => {
+  // === New: API key validation before starting the stream ===
+  if (!isValidApiKey(call.metadata)) {
+    call.emit('error', {
+      code: grpc.status.UNAUTHENTICATED,
+      details: "Missing or invalid API key"
+    });
+    call.end();
+    return;
+  }
+
   const robotId = call.request.robot_id; // Get the robot ID from the request
   let index = 0; // Start at the first status in the list
 

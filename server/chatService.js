@@ -12,11 +12,28 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 const chatProto = grpc.loadPackageDefinition(packageDefinition).chat;
 
+// === New: Define the shared API key ===
+const API_KEY = "WAREHOUSE_SECRET";
+
+// === New: Authentication utility ===
+const isValidApiKey = (metadata) => {
+  const key = metadata.get('api-key')[0];
+  return key === API_KEY;
+};
+
 // Global user counter
 let userCount = 1;
 
 // Bidirectional chat handler
 const chat = (call) => {
+  // === New: Reject unauthenticated connections immediately ===
+  if (!isValidApiKey(call.metadata)) {
+    console.log(`[UNAUTHENTICATED] ${new Date().toISOString()} - Chat session rejected`);
+    call.write({ user: "Server", message: "Authentication failed. Chat not allowed." });
+    call.end();
+    return;
+  }
+
   const username = `User ${userCount++}`;
 
   // Session intro messages

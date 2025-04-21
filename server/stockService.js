@@ -2,6 +2,7 @@ const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 
+// Load proto
 const PROTO_PATH = path.join(__dirname, '../proto/stock.proto');
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -10,17 +11,35 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   defaults: true,
   oneofs: true
 });
-
 const stockProto = grpc.loadPackageDefinition(packageDefinition).stock;
 
+// Hardcoded stock (mock DB)
 let stock = [
   { item_id: 1, name: "Box of screws", quantity: 100, location: "A1" },
   { item_id: 2, name: "Wooden planks", quantity: 50, location: "B3" },
   { item_id: 3, name: "Metal frames", quantity: 20, location: "C1" }
 ];
 
+// === Added: API key constant ===
+const API_KEY = "WAREHOUSE_SECRET";
+
+// === Added: Authentication utility ===
+const isValidApiKey = (metadata) => {
+  const key = metadata.get('api-key')[0];
+  return key === API_KEY;
+};
+
 // Unary: Update stock quantity
 const updateStock = (call, callback) => {
+  // === Added: API key check ===
+  if (!isValidApiKey(call.metadata)) {
+    console.log(`[UNAUTHENTICATED] ${new Date().toISOString()} - UpdateStock`);
+    return callback({
+      code: grpc.status.UNAUTHENTICATED,
+      details: "Missing or invalid API key"
+    });
+  }
+
   const item = stock.find(i => i.item_id === call.request.item_id);
   if (item) {
     item.quantity = call.request.new_quantity;
@@ -32,6 +51,15 @@ const updateStock = (call, callback) => {
 
 // Unary: Get stock status
 const getStockStatus = (call, callback) => {
+  // === Added: API key check ===
+  if (!isValidApiKey(call.metadata)) {
+    console.log(`[UNAUTHENTICATED] ${new Date().toISOString()} - GetStockStatus`);
+    return callback({
+      code: grpc.status.UNAUTHENTICATED,
+      details: "Missing or invalid API key"
+    });
+  }
+
   console.log('Incoming GetStockStatus request:', call.request);
 
   const item = stock.find(i => {
@@ -53,6 +81,13 @@ const getStockStatus = (call, callback) => {
 
 // Client Streaming: Bulk update
 const bulkUpdateStock = (call, callback) => {
+  // === Added: API key check at stream start ===
+  if (!isValidApiKey(call.metadata)) {
+    console.log(`[UNAUTHENTICATED] ${new Date().toISOString()} - BulkUpdateStock`);
+    call.end(); // immediately terminate stream
+    return;
+  }
+
   call.on('data', request => {
     const item = stock.find(i => i.item_id === request.item_id);
     if (item) {
@@ -65,6 +100,7 @@ const bulkUpdateStock = (call, callback) => {
   });
 };
 
+// Server startup
 const server = new grpc.Server();
 server.addService(stockProto.StockTrackingService.service, {
   UpdateStock: updateStock,
