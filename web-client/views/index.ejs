@@ -2,9 +2,53 @@
 <html>
 <head>
   <title><%= title %></title>
+  <style>
+    body { font-family: Arial; margin: 2em; }
+    section { margin-bottom: 2em; }
+    .error { color: red; }
+  </style>
 </head>
 <body>
   <h1><%= title %></h1>
-  <p>Welcome to your Smart Warehouse interface.</p>
+
+  <section>
+    <h2>Stock Information</h2>
+    <% if (stockError) { %>
+      <p class="error"><%= stockError %></p>
+    <% } else { %>
+      <ul>
+        <li><strong>Name:</strong> <%= stock.name %></li>
+        <li><strong>Quantity:</strong> <%= stock.quantity %></li>
+        <li><strong>Location:</strong> <%= stock.location %></li>
+      </ul>
+    <% } %>
+  </section>
+
+  <section>
+    <h2>Robot Status</h2>
+    <ul>
+      <li><strong>Robot ID:</strong> <%= robot.robot_id %></li>
+      <li><strong>Status:</strong> <%= robot.state %></li>
+      <li><strong>Location:</strong> <%= robot.current_location %></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Order Confirmation</h2>
+    <ul>
+      <li><strong>Order ID:</strong> <%= order.order_id %></li>
+      <li><strong>Status:</strong> <%= order.status %></li>
+    </ul>
+  </section>
+
+  <section>
+  <h2>Live Chat</h2>
+  <p>Connected to chat service as <strong>User 1</strong></p>
+  <div>
+    <p><strong>You:</strong> Hello</p>
+    <p><strong>Server:</strong> Received: "Hello"</p>
+  </div>
+  </section>
+
 </body>
 </html>
