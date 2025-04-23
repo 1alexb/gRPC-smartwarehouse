@@ -4,6 +4,9 @@ const router = express.Router();
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
+const { getLatestRobotStatus } = require('./robotService');
+const { getOrderStatus } = require('./orderService');
+const { getChatSessionStatus } = require('./chatService');
 
 // Load stock.proto
 const packageDefinition = protoLoader.loadSync(
@@ -24,7 +27,7 @@ const stockClient = new stockProto.StockTrackingService(
   grpc.credentials.createInsecure()
 );
 
-// Inject auth metadata
+// Auth metadata
 const getAuthMetadata = () => {
   const metadata = new grpc.Metadata();
   metadata.set('api-key', 'WAREHOUSE_SECRET');
@@ -41,26 +44,33 @@ router.get('/', (req, res) => {
     });
   });
 
-  const robotStatus = {
-    robot_id: 1,
-    state: 'IDLE',
-    current_location: 'Dock A'
-  }; // Static placeholder
-
-  const orderStatus = {
-    order_id: 99,
-    status: 'Received'
-  }; // Simulated response
-
-  stockPromise.then((stockResult) => {
+  // Replace static order block with real-time call
+  Promise.all([
+  stockPromise,
+  getLatestRobotStatus(1),
+  getOrderStatus(1),
+  getChatSessionStatus()
+])
+  .then(([stockResult, robot, order, chat]) => {
     res.render('index', {
       title: 'Smart Warehouse Dashboard',
       stock: stockResult.data,
       stockError: stockResult.error,
-      robot: robotStatus,
-      order: orderStatus
+      robot,
+      order,
+      chatStatus: chat
     });
-  });
+  })
+    .catch((err) => {
+      console.error('Error loading dashboard:', err.message);
+      res.render('index', {
+        title: 'Smart Warehouse Dashboard',
+        stock: null,
+        stockError: 'Could not load stock info',
+        robot: null,
+        order: null
+      });
+    });
 });
 
 module.exports = router;
