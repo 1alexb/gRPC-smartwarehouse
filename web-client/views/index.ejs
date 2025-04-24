@@ -2,20 +2,23 @@
 <html>
 <head>
   <title><%= title %></title>
-  <style>
-    body { font-family: Arial; margin: 2em; }
-    section { margin-bottom: 2em; }
-    .error { color: red; }
-  </style>
+  <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body>
   <h1><%= title %></h1>
 
   <section>
-    <h2>Stock Information</h2>
+    <h2>1. Get Stock Status</h2>
+    <form method="POST" action="/get-stock">
+      <label>Item ID:
+        <input type="number" name="item_id" required />
+      </label>
+      <button type="submit">Fetch</button>
+    </form>
+
     <% if (stockError) { %>
       <p class="error"><%= stockError %></p>
-    <% } else { %>
+    <% } else if (stock) { %>
       <ul>
         <li><strong>Name:</strong> <%= stock.name %></li>
         <li><strong>Quantity:</strong> <%= stock.quantity %></li>
@@ -25,16 +28,90 @@
   </section>
 
   <section>
-    <h2>Robot Status</h2>
-    <ul>
-      <li><strong>Robot ID:</strong> <%= robot.robot_id %></li>
-      <li><strong>Status:</strong> <%= robot.state %></li>
-      <li><strong>Location:</strong> <%= robot.current_location %></li>
-    </ul>
+    <h2>2. Update Stock</h2>
+    <form method="POST" action="/update-stock">
+      <label>Item ID:
+        <input type="number" name="item_id" required />
+      </label><br/>
+      <label>New Quantity:
+        <input type="number" name="new_quantity" required />
+      </label><br/>
+      <button type="submit">Update</button>
+    </form>
+    <% if (stockUpdateMessage) { %>
+      <p><strong><%= stockUpdateMessage %></strong></p>
+    <% } %>
   </section>
 
   <section>
-    <h2>Order Confirmation</h2>
+    <h2>3. Bulk Update Stock</h2>
+    <form id="bulk-form" method="POST" action="/bulk-update">
+      <div id="bulk-items">
+        <div class="bulk-entry">
+          <label>Item ID: <input type="number" name="updates[0][item_id]" required></label>
+          <label>New Quantity: <input type="number" name="updates[0][new_quantity]" required></label>
+        </div>
+      </div>
+      <button type="button" id="add-row">Add Another</button>
+      <button type="submit">Submit Bulk Update</button>
+    </form>
+
+    <% if (stockUpdateMessage) { %>
+      <p><strong><%= stockUpdateMessage %></strong></p>
+    <% } %>
+  </section>
+
+  <script>
+    let entryCount = 1;
+
+    document.getElementById('add-row').addEventListener('click', () => {
+      const container = document.getElementById('bulk-items');
+      const div = document.createElement('div');
+      div.classList.add('bulk-entry');
+      div.innerHTML = `
+        <label>Item ID: <input type="number" name="updates[${entryCount}][item_id]" required></label>
+        <label>New Quantity: <input type="number" name="updates[${entryCount}][new_quantity]" required></label>
+      `;
+      container.appendChild(div);
+      entryCount++;
+    });
+  </script>
+
+  <section>
+    <h2>4. Track Robot Status</h2>
+    <form action="/track-robot" method="POST">
+      <label>Robot ID: <input type="number" name="robot_id" value="1" required /></label>
+      <button type="submit">Track Robot</button>
+    </form>
+
+    <% if (robot) { %>
+      <ul>
+        <li><strong>Robot ID:</strong> <%= robot.robot_id %></li>
+        <li><strong>Status:</strong> <%= robot.state %></li>
+        <li><strong>Location:</strong> <%= robot.current_location %></li>
+      </ul>
+    <% } %>
+  </section>
+
+  <section>
+    <h2>5. Place Order</h2>
+    <form method="POST" action="/place-order">
+      <label>Item ID:
+        <input type="number" name="item_id" required />
+      </label><br/>
+      <label>Quantity:
+        <input type="number" name="quantity" required />
+      </label><br/>
+      <button type="submit">Place Order</button>
+    </form>
+
+    <% if (orderMessage) { %>
+      <p><strong><%= orderMessage %></strong></p>
+    <% } %>
+  </section>
+
+  <section>
+    <h2>6. Order Confirmation</h2>
     <ul>
       <li><strong>Order ID:</strong> <%= order.order_id %></li>
       <li><strong>Status:</strong> <%= order.status %></li>
@@ -42,9 +119,9 @@
   </section>
 
   <section>
-    <h2>Live Chat</h2>
+    <h2>7. Start Chat</h2>
     <p>Connection status: <strong><%= chatStatus || 'Unknown' %></strong></p>
+    <%- include('partials/chat') %>
   </section>
-
 </body>
 </html>

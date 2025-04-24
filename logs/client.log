@@ -74,3 +74,25 @@
 [CLIENT] 2025-04-21T16:23:06.436Z - Resolved OrderFulfillmentService to localhost:50053
 [CLIENT] 2025-04-21T16:23:08.855Z - Placing order: {"items":[{"item_id":1,"quantity":50}]}
 [CLIENT] 2025-04-21T16:23:08.997Z - Order placed successfully: {"order_id":3,"status":"Received"}
+[CLIENT] 2025-04-23T08:00:45.877Z - === SMART WAREHOUSE CLIENT STARTED ===
+[CLIENT] 2025-04-23T08:00:52.254Z - User selected menu option: 1
+[CLIENT] 2025-04-23T08:00:52.327Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-23T08:00:54.756Z - Calling GetStockStatus with item ID 1
+[CLIENT] 2025-04-23T08:00:54.800Z - Received stock info: {"item_id":1,"name":"Box of screws","quantity":50,"location":"A1"}
+[CLIENT] 2025-04-23T08:00:57.482Z - User selected menu option: 2
+[CLIENT] 2025-04-23T08:00:57.488Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-23T08:01:06.577Z - Calling UpdateStock for item 1 with qty 100
+[CLIENT] 2025-04-23T08:01:06.583Z - UpdateStock response: Stock updated.
+[CLIENT] 2025-04-23T08:01:13.503Z - User selected menu option: 1
+[CLIENT] 2025-04-23T08:01:13.514Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-23T08:01:14.305Z - Calling GetStockStatus with item ID 1
+[CLIENT] 2025-04-23T08:01:14.311Z - Received stock info: {"item_id":1,"name":"Box of screws","quantity":100,"location":"A1"}
+[CLIENT] 2025-04-23T11:58:00.314Z - User selected menu option: 1
+[CLIENT] 2025-04-23T11:58:00.368Z - Resolved StockTrackingService to localhost:50051
+[CLIENT] 2025-04-23T14:29:00.800Z - Calling GetStockStatus with item ID 5
+[CLIENT] 2025-04-23T14:29:00.851Z - gRPC error: Item not found
+[CLIENT] 2025-04-23T14:29:03.335Z - User selected menu option: 5
+[CLIENT] 2025-04-23T14:29:03.385Z - Resolved OrderFulfillmentService to localhost:50053
+[CLIENT] 2025-04-23T14:29:05.023Z - Placing order: {"items":[{"item_id":1,"quantity":1}]}
+[CLIENT] 2025-04-23T14:29:05.069Z - Order placed successfully: {"order_id":4,"status":"Received"}
+[CLIENT] 2025-04-23T15:06:20.011Z - === SMART WAREHOUSE CLIENT STARTED ===

@@ -1,0 +1,61 @@
+<section id="chat">
+  <h2>Live Chat</h2>
+
+  <button id="start-chat">Start Chat</button>
+
+  <div id="chat-window" style="border: 1px solid #ccc; padding: 1em; height: 200px; overflow-y: scroll; background: #f9f9f9; margin-top: 1em;">
+    <!-- Messages will appear here -->
+  </div>
+
+  <form id="chat-form" style="margin-top: 1em; display: none;">
+    <input type="text" id="chat-input" placeholder="Type your message..." required style="width: 80%;" />
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let socket = null;
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatWindow = document.getElementById('chat-window');
+    const startBtn = document.getElementById('start-chat');
+
+    function appendMessage(user, message) {
+      const p = document.createElement('p');
+      p.textContent = `[${user}]: ${message}`;
+      chatWindow.appendChild(p);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (!socket) {
+        socket = io();
+
+        // Fixed: Use correct event name
+        socket.on('chat-message', (msg) => {
+          appendMessage(msg.user, msg.message);
+        });
+
+        socket.on('connect', () => {
+          appendMessage('System', 'Connected to chat server.');
+        });
+
+        socket.on('disconnect', () => {
+          appendMessage('System', 'Disconnected from chat.');
+        });
+
+        chatForm.style.display = 'block';
+      }
+    });
+
+    chatForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const message = chatInput.value.trim();
+      if (message !== '') {
+        appendMessage('You', message); // Show user's own message
+        socket.emit('chat-message', message); // Matches the server listener
+        chatInput.value = '';
+      }
+    });
+  </script>
+</section>
